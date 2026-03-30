@@ -10,9 +10,9 @@
  * @see {@link https://github.com/sponsors/tomaschochola} GitHub Sponsors
  */
 
-import { BabelStack } from '@tomaschochola/tooling-babel';
+import { Babel } from '@tomaschochola/tooling-babel';
 
 // eslint-disable-next-line no-restricted-exports
-export default new BabelStack()
+export default new Babel()
   .env()
   .build();

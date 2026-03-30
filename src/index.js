@@ -10,7 +10,7 @@
  * @see {@link https://github.com/sponsors/tomaschochola} GitHub Sponsors
  */
 
-export class BabelStack {
+export class Babel {
   config;
 
   constructor() {
