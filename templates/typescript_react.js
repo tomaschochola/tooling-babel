@@ -14,8 +14,8 @@ import { Babel } from '@tomaschochola/tooling-babel';
 
 // eslint-disable-next-line no-restricted-exports
 export default new Babel()
-  .env()
-  .typescript()
-  .react()
-  .reactCompiler()
-  .build();
+  .presetEnv()
+  .presetTypeScript()
+  .presetReact()
+  .pluginReactCompiler()
+  .buildConfig();

@@ -16,8 +16,8 @@ export class Babel {
   constructor() {
     this.config = {
       comments: true,
-      compact: this.mode === 'production',
-      minified: this.mode === 'production',
+      compact: false,
+      minified: false,
       plugins: [],
       presets: [],
     };
@@ -35,14 +35,14 @@ export class Babel {
     return this.BABEL_ENV ?? this.NODE_ENV ?? 'production';
   }
 
-  replace(config) {
+  replaceConfig(config) {
     this.config = { ...config };
 
     return this;
   }
 
-  env(options = {}) {
-    return this.replace({
+  presetEnv(options = {}) {
+    return this.replaceConfig({
       ...this.config,
       presets: [
         ...this.config.presets,
@@ -63,8 +63,8 @@ export class Babel {
     });
   }
 
-  typescript(options = {}) {
-    return this.replace({
+  presetTypeScript(options = {}) {
+    return this.replaceConfig({
       ...this.config,
       presets: [
         ...this.config.presets,
@@ -78,8 +78,8 @@ export class Babel {
     });
   }
 
-  react(options = {}) {
-    return this.replace({
+  presetReact(options = {}) {
+    return this.replaceConfig({
       ...this.config,
       presets: [
         ...this.config.presets,
@@ -95,8 +95,8 @@ export class Babel {
     });
   }
 
-  reactCompiler(options = {}) {
-    return this.replace({
+  pluginReactCompiler(options = {}) {
+    return this.replaceConfig({
       ...this.config,
       plugins: [
         [
@@ -110,7 +110,7 @@ export class Babel {
     });
   }
 
-  build() {
+  buildConfig() {
     return { ...this.config };
   }
 }
