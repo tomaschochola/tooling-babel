@@ -10,12 +10,14 @@
  * @see {@link https://github.com/sponsors/tomaschochola} GitHub Sponsors
  */
 
-import { Babel } from '@tomaschochola/tooling-babel';
+import { BabelConfigBuilder } from '@tomaschochola/tooling-babel';
 
 // eslint-disable-next-line no-restricted-exports
-export default new Babel()
-  .presetEnv()
-  .presetTypeScript()
-  .presetReact()
-  .pluginReactCompiler()
-  .buildConfig();
+export default new BabelConfigBuilder({
+  mode: process.env.BABEL_ENV ?? process.env.NODE_ENV ?? 'production',
+})
+  .addPresetEnv()
+  .addPresetTypeScript()
+  .addPresetReact()
+  .addReactCompilerPlugin()
+  .toConfig();

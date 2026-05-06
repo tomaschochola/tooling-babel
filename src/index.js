@@ -10,11 +10,15 @@
  * @see {@link https://github.com/sponsors/tomaschochola} GitHub Sponsors
  */
 
-export class Babel {
-  config;
+const namedConfigItemName = (item) => (Array.isArray(item) ? item[0] : item);
 
-  constructor() {
-    this.config = {
+export class BabelConfigBuilder {
+  #config;
+  #mode;
+
+  constructor({ mode = 'production' } = {}) {
+    this.#mode = mode;
+    this.#config = {
       comments: true,
       compact: false,
       minified: false,
@@ -23,29 +27,32 @@ export class Babel {
     };
   }
 
-  get BABEL_ENV() {
-    return process.env.BABEL_ENV;
-  }
-
-  get NODE_ENV() {
-    return process.env.NODE_ENV;
-  }
-
-  get mode() {
-    return this.BABEL_ENV ?? this.NODE_ENV ?? 'production';
-  }
-
-  replaceConfig(config) {
-    this.config = { ...config };
+  #replaceConfig(config) {
+    this.#config = { ...config };
 
     return this;
   }
 
-  presetEnv(options = {}) {
-    return this.replaceConfig({
-      ...this.config,
+  #addPreset(name, options = {}) {
+    return this.#replaceConfig({
+      ...this.#config,
       presets: [
-        ...this.config.presets,
+        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== name),
+        [
+          name,
+          {
+            ...options,
+          },
+        ],
+      ],
+    });
+  }
+
+  addPresetEnv(options = {}) {
+    return this.#replaceConfig({
+      ...this.#config,
+      presets: [
+        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== '@babel/preset-env'),
         [
           '@babel/preset-env',
           {
@@ -63,30 +70,19 @@ export class Babel {
     });
   }
 
-  presetTypeScript(options = {}) {
-    return this.replaceConfig({
-      ...this.config,
-      presets: [
-        ...this.config.presets,
-        [
-          '@babel/preset-typescript',
-          {
-            ...options,
-          },
-        ],
-      ],
-    });
+  addPresetTypeScript(options = {}) {
+    return this.#addPreset('@babel/preset-typescript', options);
   }
 
-  presetReact(options = {}) {
-    return this.replaceConfig({
-      ...this.config,
+  addPresetReact(options = {}) {
+    return this.#replaceConfig({
+      ...this.#config,
       presets: [
-        ...this.config.presets,
+        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== '@babel/preset-react'),
         [
           '@babel/preset-react',
           {
-            development: this.mode === 'development',
+            development: this.#mode === 'development',
             runtime: 'automatic',
             ...options,
           },
@@ -95,9 +91,9 @@ export class Babel {
     });
   }
 
-  pluginReactCompiler(options = {}) {
-    return this.replaceConfig({
-      ...this.config,
+  addReactCompilerPlugin(options = {}) {
+    return this.#replaceConfig({
+      ...this.#config,
       plugins: [
         [
           'babel-plugin-react-compiler',
@@ -105,12 +101,16 @@ export class Babel {
             ...options,
           },
         ],
-        ...this.config.plugins,
+        ...this.#config.plugins.filter((plugin) => namedConfigItemName(plugin) !== 'babel-plugin-react-compiler'),
       ],
     });
   }
 
-  buildConfig() {
-    return { ...this.config };
+  toConfig() {
+    return {
+      ...this.#config,
+      plugins: [...this.#config.plugins],
+      presets: [...this.#config.presets],
+    };
   }
 }
