@@ -10,6 +10,13 @@
  * @see {@link https://github.com/sponsors/tomaschochola} GitHub Sponsors
  */
 
+import presetEnv from '@babel/preset-env';
+import presetReact from '@babel/preset-react';
+import presetTypeScript from '@babel/preset-typescript';
+import reactCompiler from 'babel-plugin-react-compiler';
+
+const reactCompilerPlugin = reactCompiler.default ?? reactCompiler;
+
 const namedConfigItemName = (item) => (Array.isArray(item) ? item[0] : item);
 
 export class BabelConfigBuilder {
@@ -52,17 +59,11 @@ export class BabelConfigBuilder {
     return this.#replaceConfig({
       ...this.#config,
       presets: [
-        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== '@babel/preset-env'),
+        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== presetEnv),
         [
-          '@babel/preset-env',
+          presetEnv,
           {
-            bugfixes: true,
-            corejs: {
-              proposals: false,
-              version: '3.49.0',
-            },
             modules: false,
-            useBuiltIns: 'entry',
             ...options,
           },
         ],
@@ -71,16 +72,16 @@ export class BabelConfigBuilder {
   }
 
   addPresetTypeScript(options = {}) {
-    return this.#addPreset('@babel/preset-typescript', options);
+    return this.#addPreset(presetTypeScript, options);
   }
 
   addPresetReact(options = {}) {
     return this.#replaceConfig({
       ...this.#config,
       presets: [
-        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== '@babel/preset-react'),
+        ...this.#config.presets.filter((preset) => namedConfigItemName(preset) !== presetReact),
         [
-          '@babel/preset-react',
+          presetReact,
           {
             development: this.#mode === 'development',
             runtime: 'automatic',
@@ -96,12 +97,12 @@ export class BabelConfigBuilder {
       ...this.#config,
       plugins: [
         [
-          'babel-plugin-react-compiler',
+          reactCompilerPlugin,
           {
             ...options,
           },
         ],
-        ...this.#config.plugins.filter((plugin) => namedConfigItemName(plugin) !== 'babel-plugin-react-compiler'),
+        ...this.#config.plugins.filter((plugin) => namedConfigItemName(plugin) !== reactCompilerPlugin),
       ],
     });
   }
