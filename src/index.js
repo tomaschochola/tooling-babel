@@ -54,9 +54,7 @@ export class BabelConfigBuilder {
 
     return this.#replaceConfig({
       ...this.#config,
-      presets: existingIndex === -1
-        ? [...this.#config.presets, preset]
-        : this.#config.presets.map((item, index) => (index === existingIndex ? preset : item)),
+      presets: existingIndex === -1 ? [...this.#config.presets, preset] : this.#config.presets.map((item, index) => (index === existingIndex ? preset : item)),
     });
   }
 
@@ -69,19 +67,32 @@ export class BabelConfigBuilder {
     ];
 
     const existingIndex = this.#config.plugins.findIndex((item) => configItemName(item) === name);
+    let plugins;
+
+    if (existingIndex === -1) {
+      plugins = prepend ? [plugin, ...this.#config.plugins] : [...this.#config.plugins, plugin];
+    } else {
+      plugins = this.#config.plugins.map((item, index) => (index === existingIndex ? plugin : item));
+    }
 
     return this.#replaceConfig({
       ...this.#config,
-      plugins: existingIndex === -1
-        ? (prepend ? [plugin, ...this.#config.plugins] : [...this.#config.plugins, plugin])
-        : this.#config.plugins.map((item, index) => (index === existingIndex ? plugin : item)),
+      plugins,
     });
   }
 
   setTargets(targets) {
+    let normalizedTargets = targets;
+
+    if (Array.isArray(targets)) {
+      normalizedTargets = [...targets];
+    } else if (targets !== null && typeof targets === 'object') {
+      normalizedTargets = { ...targets };
+    }
+
     return this.#replaceConfig({
       ...this.#config,
-      targets: Array.isArray(targets) ? [...targets] : (typeof targets === 'object' ? { ...targets } : targets),
+      targets: normalizedTargets,
     });
   }
 

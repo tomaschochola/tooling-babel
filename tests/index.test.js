@@ -15,12 +15,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { BabelConfigBuilder } from '../src/index.js';
 
-const transform = async (builder, code, filename) => transformAsync(code, {
-  ...builder.toConfig(),
-  babelrc: false,
-  configFile: false,
-  filename,
-});
+const transform = async (builder, code, filename) =>
+  transformAsync(code, {
+    ...builder.toConfig(),
+    babelrc: false,
+    configFile: false,
+    filename,
+  });
 
 test('empty builder exposes explicit readable-output defaults', () => {
   assert.deepEqual(new BabelConfigBuilder().toConfig(), {
@@ -33,11 +34,7 @@ test('empty builder exposes explicit readable-output defaults', () => {
 });
 
 test('repeated presets update options without changing order or duplicating entries', () => {
-  const config = new BabelConfigBuilder()
-    .addPresetEnv({ debug: false })
-    .addPresetTypeScript()
-    .addPresetEnv({ debug: true })
-    .toConfig();
+  const config = new BabelConfigBuilder().addPresetEnv({ debug: false }).addPresetTypeScript().addPresetEnv({ debug: true }).toConfig();
 
   assert.equal(config.presets.length, 2);
   assert.equal(config.presets[0][1].debug, true);
@@ -70,23 +67,9 @@ test('returned top-level preset and plugin options cannot mutate builder state',
 });
 
 test('entry polyfills follow the configured browser targets', async () => {
-  const modern = await transform(
-    new BabelConfigBuilder()
-      .setTargets({ chrome: '136' })
-      .addPresetEnv()
-      .addCoreJsEntryPolyfills(),
-    'import \'core-js/stable\';\n',
-    'polyfills.js',
-  );
+  const modern = await transform(new BabelConfigBuilder().setTargets({ chrome: '136' }).addPresetEnv().addCoreJsEntryPolyfills(), "import 'core-js/stable';\n", 'polyfills.js');
 
-  const legacy = await transform(
-    new BabelConfigBuilder()
-      .setTargets({ chrome: '60' })
-      .addPresetEnv()
-      .addCoreJsEntryPolyfills(),
-    'import \'core-js/stable\';\n',
-    'polyfills.js',
-  );
+  const legacy = await transform(new BabelConfigBuilder().setTargets({ chrome: '60' }).addPresetEnv().addCoreJsEntryPolyfills(), "import 'core-js/stable';\n", 'polyfills.js');
 
   const modernImports = modern.code.match(/core-js\/modules/gu) ?? [];
   const legacyImports = legacy.code.match(/core-js\/modules/gu) ?? [];
@@ -97,22 +80,14 @@ test('entry polyfills follow the configured browser targets', async () => {
 });
 
 test('environment preset preserves syntax supported by the declared browser baseline', async () => {
-  const result = await transform(
-    new BabelConfigBuilder().addPresetEnv({ targets: { chrome: '136' } }),
-    'export const value = input?.value ?? 0;\n',
-    'sample.js',
-  );
+  const result = await transform(new BabelConfigBuilder().addPresetEnv({ targets: { chrome: '136' } }), 'export const value = input?.value ?? 0;\n', 'sample.js');
 
   assert.match(result.code, /input\?\.value \?\? 0/u);
   assert.match(result.code, /export const value/u);
 });
 
 test('TypeScript preset removes explicit type syntax and type-only imports', async () => {
-  const result = await transform(
-    new BabelConfigBuilder().addPresetTypeScript(),
-    'import type { Value } from \'./types.js\';\nexport const value: Value = 42;\n',
-    'sample.ts',
-  );
+  const result = await transform(new BabelConfigBuilder().addPresetTypeScript(), "import type { Value } from './types.js';\nexport const value: Value = 42;\n", 'sample.ts');
 
   assert.doesNotMatch(result.code, /import/u);
   assert.doesNotMatch(result.code, /: Value/u);
@@ -120,17 +95,9 @@ test('TypeScript preset removes explicit type syntax and type-only imports', asy
 });
 
 test('React preset selects production and development automatic runtimes', async () => {
-  const production = await transform(
-    new BabelConfigBuilder().addPresetReact(),
-    'export const App = () => <main>content</main>;\n',
-    'sample.jsx',
-  );
+  const production = await transform(new BabelConfigBuilder().addPresetReact(), 'export const App = () => <main>content</main>;\n', 'sample.jsx');
 
-  const development = await transform(
-    new BabelConfigBuilder({ mode: 'development' }).addPresetReact(),
-    'export const App = () => <main>content</main>;\n',
-    'sample.jsx',
-  );
+  const development = await transform(new BabelConfigBuilder({ mode: 'development' }).addPresetReact(), 'export const App = () => <main>content</main>;\n', 'sample.jsx');
 
   assert.match(production.code, /react\/jsx-runtime/u);
   assert.doesNotMatch(production.code, /jsxDEV/u);
@@ -146,7 +113,7 @@ test('React compiler transforms a typed component through the complete pipeline'
       .addPresetTypeScript()
       .addPresetReact()
       .addReactCompilerPlugin(),
-    'import \'core-js/stable\';\nexport function App({ name }: { name: string }) { return <main>{name}</main>; }\n',
+    "import 'core-js/stable';\nexport function App({ name }: { name: string }) { return <main>{name}</main>; }\n",
     'sample.tsx',
   );
 
