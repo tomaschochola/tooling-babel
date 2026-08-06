@@ -12,7 +12,6 @@
 
 import { BabelConfigBuilder } from '@tomaschochola/tooling-babel';
 
-// eslint-disable-next-line no-restricted-exports
 export default new BabelConfigBuilder({
   mode: process.env.BABEL_ENV ?? process.env.NODE_ENV ?? 'production',
 })

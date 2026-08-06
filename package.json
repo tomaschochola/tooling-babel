@@ -20,13 +20,14 @@
     "@babel/preset-env": "^8.0.2",
     "@babel/preset-react": "^8.0.1",
     "@babel/preset-typescript": "^8.0.1",
+    "babel-plugin-polyfill-corejs3": "^1.0.0",
     "babel-plugin-react-compiler": "^1.0.0"
   },
   "description": "Shared Babel configuration builder and templates for JavaScript and TypeScript projects.",
   "devDependencies": {
-    "@tomaschochola/tooling-eslint": "github:tomaschochola/tooling-eslint#2.x",
-    "@tomaschochola/tooling-prettier": "github:tomaschochola/tooling-prettier#2.x",
-    "@tomaschochola/tooling-trimmer": "github:tomaschochola/tooling-trimmer#2.x"
+    "@tomaschochola/tooling-eslint": "github:tomaschochola/tooling-eslint#main",
+    "@tomaschochola/tooling-prettier": "github:tomaschochola/tooling-prettier#main",
+    "@tomaschochola/tooling-trimmer": "github:tomaschochola/tooling-trimmer#main"
   },
   "exports": {
     ".": "./src/index.js"
@@ -63,5 +64,5 @@
     "url": "git+https://github.com/tomaschochola/tooling-babel.git"
   },
   "type": "module",
-  "version": "2.0.0"
+  "version": "0.0.0"
 }
