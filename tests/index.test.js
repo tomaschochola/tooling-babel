@@ -125,7 +125,7 @@ test('React compiler transforms a typed component through the complete pipeline'
 
 test('all copy templates resolve to non-empty Babel configurations', async () => {
   for (const template of ['javascript', 'typescript', 'typescript_react']) {
-    const { default: config } = await import(`../templates/${template}.js?test=${template}`);
+    const { default: config } = await import(`../templates/${template}.js`);
 
     assert.equal(Array.isArray(config.presets), true);
     assert.equal(config.presets.length > 0, true);
