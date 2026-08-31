@@ -13,10 +13,10 @@
 import { BabelConfigBuilder } from '@tomaschochola/tooling-babel';
 
 export default new BabelConfigBuilder({
-  mode: process.env.BABEL_ENV ?? process.env.NODE_ENV ?? 'production',
+    mode: process.env.BABEL_ENV ?? process.env.NODE_ENV ?? 'production',
 })
-  .addPresetEnv()
-  .addPresetTypeScript()
-  .addPresetReact()
-  .addReactCompilerPlugin()
-  .toConfig();
+    .addPresetEnv()
+    .addPresetTypeScript()
+    .addPresetReact()
+    .addReactCompilerPlugin()
+    .toConfig();
