@@ -117,7 +117,7 @@ prettier_check: ./node_modules/.package-lock.json ./package.json ./package-lock.
 
 .PHONY: node_test
 node_test: ./node_modules/.package-lock.json ./package.json ./package-lock.json
-	node --test --experimental-test-coverage --test-coverage-include='src/**/*.js' --test-coverage-lines=98 --test-coverage-branches=90 --test-coverage-functions=100
+	node --test --experimental-test-coverage --test-coverage-include='src/**/*.js' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100
 
 .PHONY: npm_config_check
 npm_config_check: ./.npmrc

@@ -33,6 +33,64 @@ test('empty builder exposes explicit readable-output defaults', () => {
     });
 });
 
+test('constructor accepts supported modes and rejects ambiguous options', () => {
+    const testConfig = new BabelConfigBuilder({ mode: 'test' }).addPresetReact().toConfig();
+
+    assert.equal(testConfig.presets[0][1].development, false);
+    assert.throws(() => new BabelConfigBuilder(null), {
+        message: 'options must be a plain object.',
+        name: 'TypeError',
+    });
+    assert.throws(() => new BabelConfigBuilder([]), {
+        message: 'options must be a plain object.',
+        name: 'TypeError',
+    });
+    assert.throws(() => new BabelConfigBuilder({ environment: 'production' }), {
+        message: 'Unknown BabelConfigBuilder option: environment.',
+        name: 'TypeError',
+    });
+    assert.throws(() => new BabelConfigBuilder({ mode: 'staging' }), {
+        message: 'mode must be development, production, or test.',
+        name: 'TypeError',
+    });
+});
+
+test('preset and plugin methods require plain option objects', () => {
+    assert.throws(() => new BabelConfigBuilder().addPresetEnv(null), {
+        message: 'preset options must be a plain object.',
+        name: 'TypeError',
+    });
+    assert.throws(() => new BabelConfigBuilder().addPresetTypeScript([]), {
+        message: 'preset options must be a plain object.',
+        name: 'TypeError',
+    });
+    assert.throws(() => new BabelConfigBuilder().addReactCompilerPlugin('invalid'), {
+        message: 'plugin options must be a plain object.',
+        name: 'TypeError',
+    });
+});
+
+test('targets accept explicit Babel forms and reject empty or malformed values', () => {
+    const queries = ['chrome >= 136'];
+    const queryBuilder = new BabelConfigBuilder().setTargets(queries);
+    queries.push('firefox >= 148');
+
+    assert.deepEqual(queryBuilder.toConfig().targets, ['chrome >= 136']);
+    assert.equal(new BabelConfigBuilder().setTargets('chrome >= 136').toConfig().targets, 'chrome >= 136');
+
+    const targets = Object.create(null);
+    targets.chrome = '136';
+
+    assert.deepEqual(new BabelConfigBuilder().setTargets(targets).toConfig().targets, { chrome: '136' });
+
+    for (const invalidTargets of [null, '', [], [''], {}, new Date(0), 136]) {
+        assert.throws(() => new BabelConfigBuilder().setTargets(invalidTargets), {
+            message: 'targets must be a non-empty Browserslist query, query array, or target object.',
+            name: 'TypeError',
+        });
+    }
+});
+
 test('repeated presets update options without changing order or duplicating entries', () => {
     const config = new BabelConfigBuilder().addPresetEnv({ debug: false }).addPresetTypeScript().addPresetEnv({ debug: true }).toConfig();
 
@@ -124,7 +182,7 @@ test('React compiler transforms a typed component through the complete pipeline'
 });
 
 test('all copy templates resolve to non-empty Babel configurations', async () => {
-    for (const template of ['javascript', 'typescript', 'typescript_react']) {
+    for (const template of ['browser_bundler_javascript', 'browser_bundler_typescript', 'browser_bundler_typescript_react']) {
         const { default: config } = await import(`../templates/${template}.js`);
 
         assert.equal(Array.isArray(config.presets), true);

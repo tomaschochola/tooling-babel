@@ -16,5 +16,5 @@ export default new BabelConfigBuilder({
     mode: process.env.BABEL_ENV ?? process.env.NODE_ENV ?? 'production',
 })
     .addPresetEnv()
-    .addPresetTypeScript()
+    // .addCoreJsEntryPolyfills()
     .toConfig();
