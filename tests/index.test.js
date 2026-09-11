@@ -181,9 +181,9 @@ test('React compiler transforms a typed component through the complete pipeline'
     assert.doesNotMatch(result.code, /: string/u);
 });
 
-test('all copy templates resolve to non-empty Babel configurations', async () => {
-    for (const template of ['browser_bundler_javascript', 'browser_bundler_typescript', 'browser_bundler_typescript_react']) {
-        const { default: config } = await import(`../templates/${template}.js`);
+test('all copy scaffolds resolve to non-empty Babel configurations', async () => {
+    for (const scaffold of ['browser_bundler_javascript', 'browser_bundler_typescript', 'browser_bundler_typescript_react']) {
+        const { default: config } = await import(`../scaffolds/${scaffold}.js`);
 
         assert.equal(Array.isArray(config.presets), true);
         assert.equal(config.presets.length > 0, true);

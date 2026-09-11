@@ -23,7 +23,7 @@
         "babel-plugin-polyfill-corejs3": "^1.0.0",
         "babel-plugin-react-compiler": "^1.0.0"
     },
-    "description": "Shared Babel configuration builder and templates for JavaScript and TypeScript projects.",
+    "description": "Shared Babel configuration builder and scaffolds for JavaScript and TypeScript projects.",
     "devDependencies": {
         "@tomaschochola/tooling-eslint": "git+https://github.com/tomaschochola/tooling-eslint.git#main",
         "@tomaschochola/tooling-prettier": "git+https://github.com/tomaschochola/tooling-prettier.git#main",
@@ -34,7 +34,7 @@
     },
     "files": [
         "src",
-        "templates"
+        "scaffolds"
     ],
     "funding": {
         "type": "github",
