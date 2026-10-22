@@ -46,14 +46,7 @@
         "TomasChochola",
         "Tomas Chochola",
         "Tomáš Chochola",
-        "babel",
-        "compiler",
-        "configuration",
-        "javascript",
-        "react",
-        "tooling-babel",
-        "transpiler",
-        "typescript"
+        "tooling-babel"
     ],
     "license": "CC-BY-ND-4.0",
     "main": "./src/index.js",
