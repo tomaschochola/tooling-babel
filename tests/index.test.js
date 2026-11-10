@@ -88,12 +88,7 @@ test('repeated presets update options without changing order or duplicating entr
 });
 
 test('returned top-level preset and plugin options cannot mutate builder state', () => {
-    const builder = new BabelConfigBuilder()
-        .setTargets({ chrome: '136' })
-        .addPresetEnv({ debug: true })
-        .addCoreJsEntryPolyfills()
-        .addReactCompilerPlugin({ target: '17' })
-        .addReactCompilerPlugin({ target: '19' });
+    const builder = new BabelConfigBuilder().setTargets({ chrome: '136' }).addPresetEnv({ debug: true }).addCoreJsEntryPolyfills().addReactCompilerPlugin({ target: '17' }).addReactCompilerPlugin({ target: '19' });
 
     const config = builder.toConfig();
 
